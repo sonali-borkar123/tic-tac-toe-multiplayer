@@ -1,6 +1,6 @@
 import { BoardState } from '@/types/game';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { GameCell } from './GameCell';
 
 interface GameBoardProps {
@@ -11,6 +11,15 @@ interface GameBoardProps {
 }
 
 export function GameBoard({ board, onCellPress, disabled, winningLine = [] }: GameBoardProps) {
+  // Safety check for board
+  if (!board || !Array.isArray(board) || board.length !== 9) {
+    return (
+      <View style={styles.board}>
+        <ActivityIndicator size="large" color="#3498db" />
+      </View>
+    );
+  }
+
   const renderRow = (startIndex: number) => {
     return (
       <View style={styles.row}>

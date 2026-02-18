@@ -65,13 +65,13 @@ export async function joinGameSession(
 
     const game = snapshot.val() as GameSession;
 
-    // Validate board structure
-    if (!Array.isArray(game.board) || game.board.length !== 9) {
-      throw new Error('Invalid game state');
+    // Check if players object exists
+    if (!game.players) {
+      throw new Error('Invalid game data');
     }
 
     // Check if game already has two players
-    if (game.players.player2 !== null) {
+    if (game.players.player2 !== null && game.players.player2 !== undefined) {
       throw new Error('Game is full');
     }
 
@@ -81,7 +81,7 @@ export async function joinGameSession(
     }
 
     const now = Date.now();
-    const updates = {
+    const updates: any = {
       'players/player2': {
         id: playerId,
         mark: 'O',
@@ -91,6 +91,11 @@ export async function joinGameSession(
       status: 'active',
       updatedAt: now,
     };
+
+    // Ensure board exists
+    if (!game.board) {
+      updates.board = createEmptyBoard();
+    }
 
     await update(gameRef, updates);
   } catch (error) {

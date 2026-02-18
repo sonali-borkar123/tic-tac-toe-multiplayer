@@ -74,7 +74,19 @@ export default function LobbyScreen() {
       await joinGame(gameId);
       router.push(`/game/${gameId}` as any);
     } catch (err) {
-      Alert.alert('Error', error || 'Failed to join game');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to join game';
+      
+      // Provide more helpful error messages
+      if (errorMessage.includes('full')) {
+        Alert.alert('Game Full', 'This game already has 2 players. Please create a new game or join a different one.');
+      } else if (errorMessage.includes('not found')) {
+        Alert.alert('Game Not Found', 'No game exists with this ID. Please check the ID and try again.');
+      } else if (errorMessage.includes('already in this game')) {
+        Alert.alert('Already Joined', 'You are already in this game. Opening game...');
+        router.push(`/game/${gameId}` as any);
+      } else {
+        Alert.alert('Error', errorMessage);
+      }
     }
   };
 

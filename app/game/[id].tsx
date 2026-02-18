@@ -97,11 +97,15 @@ export default function GameScreen() {
       />
 
       <View style={styles.boardContainer}>
-        <GameBoard
-          board={game.board}
-          onCellPress={handleCellPress}
-          disabled={!isMyTurn || game.status !== 'active'}
-        />
+        {game.board ? (
+          <GameBoard
+            board={game.board}
+            onCellPress={handleCellPress}
+            disabled={!isMyTurn || game.status !== 'active'}
+          />
+        ) : (
+          <ActivityIndicator size="large" color="#3498db" />
+        )}
       </View>
 
       {game.status === 'waiting' && (
